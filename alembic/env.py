@@ -25,7 +25,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(base_dir)
-from universal_webhooks.database import Base
+from universal_webhooks.database import Base, url
 from universal_webhooks.models import *
 
 target_metadata = Base.metadata
@@ -33,7 +33,7 @@ target_metadata = Base.metadata
 
 def get_url():
     url = make_url(settings.settings.database_url)
-    url.set(drivername="postgresql+asyncpg")
+    url = url.set(drivername="postgresql+asyncpg")
     return url
 
 
@@ -55,7 +55,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = get_url()
+    # url = get_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -81,7 +81,8 @@ async def run_migrations_online():
     and associate a connection with the context.
 
     """
-    connectable = create_async_engine(get_url())
+    url = get_url()
+    connectable = create_async_engine(url)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

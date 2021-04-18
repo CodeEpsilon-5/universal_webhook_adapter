@@ -7,11 +7,12 @@ from universal_webhooks.settings import settings
 
 url = make_url(settings.database_url)
 if "postgres" in settings.database_url:
-    url.set(drivername="postgresql+asyncpg")
+    url = url.set(drivername="postgresql+asyncpg")
 
-engine = create_async_engine(
-    settings.database_url.replace("postgres://", "postgresql+asyncpg://")
-)
+# url = settings.database_url.replace("postgres://", "postgresql+asyncpg://")
+
+engine = create_async_engine(url)
+
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
